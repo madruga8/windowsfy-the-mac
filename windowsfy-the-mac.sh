@@ -91,7 +91,52 @@ defaults write NSGlobalDomain InitialKeyRepeat -int 15
 print_ok "Digitação em modo turbo ativada."
 
 # ------------------------------------------------------------------------------
-# 4. Windows + Tab → Mission Control
+# 4. Navegação de texto estilo Windows (Home/End/Ctrl+Home/Ctrl+End)
+# ------------------------------------------------------------------------------
+print_step "Configurando navegação de texto estilo Windows (Home, End, Ctrl+Home, Ctrl+End)..."
+
+KEYBINDINGS_DIR="$HOME/Library/KeyBindings"
+KEYBINDINGS_FILE="$KEYBINDINGS_DIR/DefaultKeyBinding.dict"
+
+mkdir -p "$KEYBINDINGS_DIR"
+
+cat > "$KEYBINDINGS_FILE" << 'KEYBINDINGS'
+{
+    /* Home → início da linha (igual Windows) */
+    "\UF729"   = "moveToBeginningOfLine:";
+    /* End → fim da linha (igual Windows) */
+    "\UF72B"   = "moveToEndOfLine:";
+    /* Shift+Home → selecionar até início da linha */
+    "$\UF729"  = "moveToBeginningOfLineAndModifySelection:";
+    /* Shift+End → selecionar até fim da linha */
+    "$\UF72B"  = "moveToEndOfLineAndModifySelection:";
+    /* Ctrl+Home (tecla Ctrl física → Cmd após remap) → início do documento */
+    "@\UF729"  = "moveToBeginningOfDocument:";
+    /* Ctrl+End → fim do documento */
+    "@\UF72B"  = "moveToEndOfDocument:";
+    /* Ctrl+Shift+Home → selecionar até início do documento */
+    "@$\UF729" = "moveToBeginningOfDocumentAndModifySelection:";
+    /* Ctrl+Shift+End → selecionar até fim do documento */
+    "@$\UF72B" = "moveToEndOfDocumentAndModifySelection:";
+    /* Ctrl+Left (Cmd+Left) → mover uma palavra à esquerda */
+    "@\UF702"  = "moveWordLeft:";
+    /* Ctrl+Right (Cmd+Right) → mover uma palavra à direita */
+    "@\UF703"  = "moveWordRight:";
+    /* Ctrl+Shift+Left → selecionar palavra à esquerda */
+    "@$\UF702" = "moveWordLeftAndModifySelection:";
+    /* Ctrl+Shift+Right → selecionar palavra à direita */
+    "@$\UF703" = "moveWordRightAndModifySelection:";
+    /* Ctrl+Backspace → deletar palavra anterior */
+    "@\177"    = "deleteWordBackward:";
+    /* Ctrl+Delete → deletar palavra à frente */
+    "@\UF728"  = "deleteWordForward:";
+}
+KEYBINDINGS
+
+print_ok "Navegação de texto configurada. Home/End movem cursor; Ctrl+Home/End vai ao início/fim do documento."
+
+# ------------------------------------------------------------------------------
+# 5. Windows + Tab → Mission Control
 # ------------------------------------------------------------------------------
 print_step "Mapeando [Windows + Tab] para o Mission Control (igual Windows + Tab no Windows)..."
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 32 \
@@ -112,6 +157,10 @@ echo "    [✓] Ctrl físico  →  Command (Ctrl+C, Ctrl+V, Ctrl+Z funcionam igu
 echo "    [✓] Windows físico  →  Control nativo do Mac (terminal etc)"
 echo "    [✓] Scroll do mouse corrigido (sem inversão)"
 echo "    [✓] Repetição de tecla ultrarrápida"
+echo "    [✓] Home/End → movem cursor (início/fim da linha)"
+echo "    [✓] Ctrl+Home/End → início/fim do documento"
+echo "    [✓] Ctrl+Left/Right → navegação por palavra"
+echo "    [✓] Ctrl+Backspace/Delete → deleta palavra"
 echo "    [✓] Windows + Tab  →  Mission Control"
 echo ""
 print_warn "Faça LOGOUT e LOGIN para aplicar todas as mudanças."
