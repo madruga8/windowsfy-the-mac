@@ -13,7 +13,7 @@ Por quê? Porque:
 - O **Ctrl+C** não copia. O **Ctrl+V** não cola. O **Ctrl+Z** não desfaz. NADA FAZ O QUE DEVERIA.
 - O scroll do mouse está **invertido**, como se a Apple achasse que você está rolando a mesa, não a tela.
 - Segurar uma tecla demora **uma eternidade** para repetir, como se o Mac estivesse pedindo pra você ter paciência.
-- O **Windows + Tab** não faz nada útil, enquanto no Windows abria aquele gerenciador de janelas que você usava uma vez por ano mas que é um princípio.
+- O **Alt+Tab** não troca de app. O **Windows + Tab** não faz nada útil. O Mac decidiu que você não precisa disso.
 
 Este script resolve tudo isso. Sem terapia. Sem curso de "como pensar diferente". Só terminal.
 
@@ -25,6 +25,7 @@ Este script resolve tudo isso. Sem terapia. Sem curso de "como pensar diferente"
 |---|---|
 | Ctrl+C não copia | Remapeia Ctrl físico → Command. Agora copia. |
 | Windows key inútil | Remapeia Windows → Control nativo do Mac. |
+| Alt+Tab não troca de app | Remapeia Alt físico → Command. Alt+Tab = App Switcher. |
 | Scroll invertido | Desativa "rolagem natural" (leia-se: rolagem confusa). |
 | Digitação lenta | Velocidade de repetição de tecla no limite do hardware. |
 | Windows+Tab sem função | Abre o Mission Control. Igual ao Windows. Mais ou menos. |

@@ -35,7 +35,7 @@ echo ""
 # ------------------------------------------------------------------------------
 # 1. Remapear Ctrl <-> Windows (via hidutil LaunchAgent)
 # ------------------------------------------------------------------------------
-print_step "Remapeando teclado: [Ctrl] → Command | [Windows] → Control..."
+print_step "Remapeando teclado: [Ctrl] → Command | [Windows] → Control | [Alt] → Command (para Alt+Tab)..."
 
 PLIST_DIR="$HOME/Library/LaunchAgents"
 PLIST_PATH="$PLIST_DIR/com.windows.keyboard.remap.plist"
@@ -62,6 +62,10 @@ cat > "$PLIST_PATH" << 'PLIST'
             {
               "HIDKeyboardModifierMappingSrc":0x7000000E3,
               "HIDKeyboardModifierMappingDst":0x7000000E0
+            },
+            {
+              "HIDKeyboardModifierMappingSrc":0x7000000E2,
+              "HIDKeyboardModifierMappingDst":0x7000000E3
             }
         ]}</string>
     </array>
@@ -73,7 +77,7 @@ PLIST
 
 launchctl unload "$PLIST_PATH" 2>/dev/null || true
 launchctl load "$PLIST_PATH"
-print_ok "Teclado remapeado e ativo agora."
+print_ok "Teclado remapeado e ativo agora. Alt+Tab = App Switcher, Ctrl+C/V/Z funcionam normal."
 
 # ------------------------------------------------------------------------------
 # 2. Scroll natural desativado (igual Windows)
@@ -161,6 +165,7 @@ echo "    [✓] Home/End → movem cursor (início/fim da linha)"
 echo "    [✓] Ctrl+Home/End → início/fim do documento"
 echo "    [✓] Ctrl+Left/Right → navegação por palavra"
 echo "    [✓] Ctrl+Backspace/Delete → deleta palavra"
+echo "    [✓] Alt físico  →  Command (Alt+Tab = App Switcher igual Windows)"
 echo "    [✓] Windows + Tab  →  Mission Control"
 echo ""
 print_warn "Faça LOGOUT e LOGIN para aplicar todas as mudanças."
