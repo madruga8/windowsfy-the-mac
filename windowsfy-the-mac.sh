@@ -134,13 +134,34 @@ cat > "$KEYBINDINGS_FILE" << 'KEYBINDINGS'
     "@\177"    = "deleteWordBackward:";
     /* Ctrl+Delete → deletar palavra à frente */
     "@\UF728"  = "deleteWordForward:";
+    /* Shift+Delete → recortar (Cut) seleção — atalho clássico Windows */
+    "$\UF728"  = "cut:";
+    /* Page Up → move cursor uma página acima */
+    "\UF72C"   = "pageUp:";
+    /* Page Down → move cursor uma página abaixo */
+    "\UF72D"   = "pageDown:";
+    /* Shift+Page Up → selecionar uma página acima */
+    "$\UF72C"  = "pageUpAndModifySelection:";
+    /* Shift+Page Down → selecionar uma página abaixo */
+    "$\UF72D"  = "pageDownAndModifySelection:";
 }
 KEYBINDINGS
 
 print_ok "Navegação de texto configurada. Home/End movem cursor; Ctrl+Home/End vai ao início/fim do documento."
 
 # ------------------------------------------------------------------------------
-# 5. Windows + Tab → Mission Control
+# 5. Delete no Finder (igual Windows — Del apaga arquivo)
+# ------------------------------------------------------------------------------
+print_step "Configurando tecla Delete para mover arquivos para a Lixeira no Finder..."
+defaults write com.apple.finder NSUserKeyEquivalents -dict-add "Move to Trash" "\U007F"
+defaults write com.apple.finder NSUserKeyEquivalents -dict-add "Go Back" "\U0008"
+defaults write com.apple.finder NSUserKeyEquivalents -dict-add "Rename" "\UF706"
+defaults write com.apple.finder NSUserKeyEquivalents -dict-add "Reload Page" "\UF708"
+killall Finder 2>/dev/null || true
+print_ok "Finder configurado: Del=Lixeira, Backspace=Voltar, F2=Renomear, F5=Atualizar."
+
+# ------------------------------------------------------------------------------
+# 6. Windows + Tab → Mission Control
 # ------------------------------------------------------------------------------
 print_step "Mapeando [Windows + Tab] para o Mission Control (igual Windows + Tab no Windows)..."
 defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 32 \
@@ -165,7 +186,12 @@ echo "    [✓] Home/End → movem cursor (início/fim da linha)"
 echo "    [✓] Ctrl+Home/End → início/fim do documento"
 echo "    [✓] Ctrl+Left/Right → navegação por palavra"
 echo "    [✓] Ctrl+Backspace/Delete → deleta palavra"
+echo "    [✓] Shift+Delete → recortar (Cut) seleção"
 echo "    [✓] Alt físico  →  Command (Alt+Tab = App Switcher igual Windows)"
+echo "    [✓] Delete no Finder → move para Lixeira (igual Windows)"
+echo "    [✓] Backspace no Finder → voltar pasta anterior"
+echo "    [✓] F2 no Finder → renomear arquivo"
+echo "    [✓] F5 no Finder → atualizar janela"
 echo "    [✓] Windows + Tab  →  Mission Control"
 echo ""
 print_warn "Faça LOGOUT e LOGIN para aplicar todas as mudanças."

@@ -14,12 +14,15 @@ Por quê? Porque:
 - O scroll do mouse está **invertido**, como se a Apple achasse que você está rolando a mesa, não a tela.
 - Segurar uma tecla demora **uma eternidade** para repetir, como se o Mac estivesse pedindo pra você ter paciência.
 - O **Alt+Tab** não troca de app. O **Windows + Tab** não faz nada útil. O Mac decidiu que você não precisa disso.
+- O **Home** e **End** não movem o cursor. O **Delete** não apaga arquivos. O **F2** não renomeia nada.
 
 Este script resolve tudo isso. Sem terapia. Sem curso de "como pensar diferente". Só terminal.
 
 ---
 
 ## O que este script faz
+
+### Teclado e atalhos globais
 
 | Problema | Solução |
 |---|---|
@@ -29,6 +32,33 @@ Este script resolve tudo isso. Sem terapia. Sem curso de "como pensar diferente"
 | Scroll invertido | Desativa "rolagem natural" (leia-se: rolagem confusa). |
 | Digitação lenta | Velocidade de repetição de tecla no limite do hardware. |
 | Windows+Tab sem função | Abre o Mission Control. Igual ao Windows. Mais ou menos. |
+
+### Navegação de texto (em qualquer campo de texto)
+
+| Atalho | Comportamento |
+|---|---|
+| `Home` / `End` | Início / fim da linha |
+| `Shift+Home` / `Shift+End` | Selecionar até início / fim da linha |
+| `Ctrl+Home` / `Ctrl+End` | Início / fim do documento |
+| `Ctrl+Shift+Home` / `Ctrl+Shift+End` | Selecionar até início / fim do documento |
+| `Ctrl+Left` / `Ctrl+Right` | Mover por palavra |
+| `Ctrl+Shift+Left` / `Ctrl+Shift+Right` | Selecionar por palavra |
+| `Ctrl+Backspace` | Deletar palavra anterior |
+| `Ctrl+Delete` | Deletar palavra à frente |
+| `Shift+Delete` | Recortar seleção (Cut) |
+| `Page Up` / `Page Down` | Mover cursor uma página |
+| `Shift+Page Up` / `Shift+Page Down` | Selecionar uma página |
+
+> **Diferença que não tem conserto:** `Ctrl+Right` no Windows para no *início* da próxima palavra. No macOS para no *fim* da palavra atual. É limitação do sistema de texto do Cocoa — não dá pra corrigir sem instalar o Karabiner-Elements.
+
+### Finder (explorador de arquivos)
+
+| Atalho | Comportamento |
+|---|---|
+| `Delete` (tecla Del) | Mover para a Lixeira |
+| `Backspace` | Voltar para a pasta anterior |
+| `F2` | Renomear arquivo |
+| `F5` | Atualizar janela |
 
 ---
 
@@ -73,6 +103,20 @@ O script inverte o scroll do mouse, mas no macOS isso afeta o trackpad também. 
 
 ---
 
+## O que não tem conserto (limite do macOS)
+
+Algumas coisas o macOS simplesmente não deixa mudar via script:
+
+| Comportamento | Windows | Mac após script |
+|---|---|---|
+| `Ctrl+Right` | Para no início da próxima palavra | Para no fim da palavra atual |
+| Modo overwrite (`Insert`) | Alterna inserção/sobrescrita | Não suportado pelo macOS |
+| `Ctrl+Insert` / `Shift+Insert` | Copy / Paste alternativos | Tecla Insert não existe em teclados Apple |
+
+Para o comportamento exato de `Ctrl+Left`/`Right`, a única solução é o **Karabiner-Elements** com regras customizadas — mas aí já é outro projeto.
+
+---
+
 ## Como desfazer (se você "virar" pro lado Mac)
 
 ```bash
@@ -86,6 +130,12 @@ defaults write NSGlobalDomain com.apple.swipescrolldirection -bool true
 # Restaura velocidade padrão de tecla
 defaults delete NSGlobalDomain KeyRepeat
 defaults delete NSGlobalDomain InitialKeyRepeat
+
+# Remove atalhos customizados do Finder
+defaults delete com.apple.finder NSUserKeyEquivalents
+
+# Remove navegação de texto customizada
+rm ~/Library/KeyBindings/DefaultKeyBinding.dict
 ```
 
 Depois faça logout e login. Bem-vindo de volta ao sofrimento original.
