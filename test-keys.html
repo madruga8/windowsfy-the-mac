@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>KeyTest 95 — Windowsfy the Mac</title>
+    <style>
+        /* ── Reset & Base ── */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #008080;
+            font-family: 'MS Sans Serif', Arial, sans-serif;
+            font-size: 11px;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── Win95 Window ── */
+        .window {
+            background: #c0c0c0;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #808080;
+            border-bottom: 2px solid #808080;
+            width: 100%;
+            max-width: 680px;
+            margin-bottom: 6px;
+        }
+
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            color: #fff;
+            font-weight: bold;
+            font-size: 11px;
+            padding: 3px 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+        }
+
+        .title-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .title-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .title-bar-buttons {
+            display: flex;
+            gap: 2px;
+        }
+
+        .tb-btn {
+            width: 16px;
+            height: 14px;
+            background: #c0c0c0;
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #808080;
+            border-bottom: 1px solid #808080;
+            font-size: 9px;
+            font-weight: bold;
+            color: #000;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Marlett', 'MS Sans Serif', Arial;
+        }
+
+        .window-body {
+            padding: 8px;
+        }
+
+        /* ── Inset / Sunken panel ── */
+        .inset {
+            background: #fff;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            padding: 6px 8px;
+        }
+
+        /* ── Group label ── */
+        .group-label {
+            color: #000080;
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        /* ── Test name ── */
+        .test-name {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #000;
+        }
+
+        /* ── Instruction ── */
+        .instruction-box {
+            background: #ffffe1;
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            padding: 5px 8px;
+            margin-bottom: 4px;
+            font-size: 11px;
+            color: #000;
+        }
+
+        .expected-text {
+            font-size: 10px;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        .expected-text span {
+            color: #000080;
+            font-weight: bold;
+        }
+
+        /* ── Textarea ── */
+        #test-area {
+            width: 100%;
+            height: 100px;
+            resize: none;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            padding: 4px;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            background: #fff;
+            outline: none;
+            margin-bottom: 8px;
+        }
+
+        /* ── Status bar ── */
+        .status-bar {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 8px;
+        }
+
+        .status-pane {
+            flex: 1;
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            padding: 2px 6px;
+            font-size: 10px;
+            color: #000;
+            background: #c0c0c0;
+        }
+
+        #status-result {
+            font-weight: bold;
+            color: #000;
+        }
+
+        #status-result.pass {
+            color: #000080;
+        }
+
+        #status-result.fail {
+            color: #800000;
+        }
+
+        /* ── Buttons ── */
+        .btn-row {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+            margin-bottom: 2px;
+        }
+
+        .win-btn {
+            min-width: 75px;
+            height: 23px;
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #808080;
+            border-bottom: 2px solid #808080;
+            font-family: 'MS Sans Serif', Arial, sans-serif;
+            font-size: 11px;
+            cursor: pointer;
+            padding: 0 8px;
+            color: #000;
+        }
+
+        .win-btn:active {
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            padding: 1px 7px 0 9px;
+        }
+
+        .win-btn:focus {
+            outline: 1px dotted #000;
+            outline-offset: -4px;
+        }
+
+        .win-btn.default-btn {
+            border: 3px solid #000;
+        }
+
+        /* ── Progress ── */
+        .progress-wrap {
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            height: 16px;
+            background: #fff;
+            margin-bottom: 8px;
+            overflow: hidden;
+            display: flex;
+            gap: 2px;
+            padding: 2px;
+        }
+
+        .progress-block {
+            width: 8px;
+            height: 100%;
+            background: #000080;
+            flex-shrink: 0;
+        }
+
+        /* ── Score window ── */
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .score-cell {
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            padding: 6px 4px;
+            text-align: center;
+            background: #c0c0c0;
+        }
+
+        .score-cell .num {
+            font-size: 22px;
+            font-weight: bold;
+            color: #000080;
+        }
+
+        .score-cell.fail-cell .num {
+            color: #800000;
+        }
+
+        .score-cell.skip-cell .num {
+            color: #808080;
+        }
+
+        .score-cell.pct-cell .num {
+            color: #000;
+        }
+
+        .score-cell .lbl {
+            font-size: 9px;
+            color: #444;
+            text-transform: uppercase;
+        }
+
+        /* ── Result dialog ── */
+        #result-dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            width: 360px;
+        }
+
+        .dialog-body {
+            padding: 12px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dialog-icon {
+            font-size: 32px;
+        }
+
+        .dialog-msg {
+            font-size: 11px;
+            text-align: center;
+            color: #000;
+            line-height: 1.6;
+        }
+
+        /* ── Taskbar ── */
+        #taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 4px;
+            gap: 4px;
+            z-index: 200;
+        }
+
+        #start-btn {
+            height: 22px;
+            background: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-left: 2px solid #fff;
+            border-right: 2px solid #808080;
+            border-bottom: 2px solid #808080;
+            font-family: 'MS Sans Serif', Arial, sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .taskbar-divider {
+            width: 2px;
+            height: 20px;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            margin: 0 2px;
+        }
+
+        #taskbar-clock {
+            margin-left: auto;
+            border-top: 1px solid #808080;
+            border-left: 1px solid #808080;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+            padding: 2px 8px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main test window -->
+    <div class="window" id="main-window">
+        <div class="title-bar">
+            <div class="title-bar-left">
+                <span>⌨</span>
+                <span>KeyTest 95 — Windowsfy the Mac</span>
+            </div>
+            <div class="title-bar-buttons">
+                <div class="tb-btn">_</div>
+                <div class="tb-btn">□</div>
+                <div class="tb-btn">✕</div>
+            </div>
+        </div>
+        <div class="window-body">
+
+            <div class="group-label" id="group">▸ Grupo</div>
+            <div class="test-name" id="test-name">Carregando...</div>
+
+            <div class="instruction-box" id="instruction">—</div>
+            <div class="expected-text">Esperado: <span id="expected">—</span></div>
+
+            <textarea id="test-area" spellcheck="false"></textarea>
+
+            <div class="status-bar">
+                <div class="status-pane">Teste <span id="idx">1</span> de <span id="total">?</span></div>
+                <div class="status-pane">Cursor: <span id="cursor-pos">0</span></div>
+                <div class="status-pane">Seleção: <span id="sel-len">0</span> chars</div>
+                <div class="status-pane" id="status-result">Aguardando...</div>
+            </div>
+
+            <div class="progress-wrap" id="progress-wrap"></div>
+
+            <div class="btn-row">
+                <button class="win-btn" id="btn-skip">Pular</button>
+                <button class="win-btn" id="btn-fail">✗ Falhou</button>
+                <button class="win-btn default-btn" id="btn-pass">✓ Passou</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Score window -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="title-bar-left"><span>📊</span><span>Placar</span></div>
+        </div>
+        <div class="window-body">
+            <div class="score-grid">
+                <div class="score-cell">
+                    <div class="num" id="s-pass">0</div>
+                    <div class="lbl">Passou</div>
+                </div>
+                <div class="score-cell fail-cell">
+                    <div class="num" id="s-fail">0</div>
+                    <div class="lbl">Falhou</div>
+                </div>
+                <div class="score-cell skip-cell">
+                    <div class="num" id="s-skip">0</div>
+                    <div class="lbl">Pulado</div>
+                </div>
+                <div class="score-cell pct-cell">
+                    <div class="num" id="s-pct">—</div>
+                    <div class="lbl">Score</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result dialog -->
+    <div id="result-dialog" class="window">
+        <div class="title-bar">
+            <div class="title-bar-left"><span>🏁</span><span>Resultado Final</span></div>
+        </div>
+        <div class="dialog-body">
+            <div class="dialog-icon" id="res-icon">🎉</div>
+            <div class="dialog-msg" id="res-msg"></div>
+            <button class="win-btn default-btn" onclick="restart()">↺ Testar novamente</button>
+        </div>
+    </div>
+
+    <!-- Taskbar -->
+    <div id="taskbar">
+        <button id="start-btn">🪟 Start</button>
+        <div class="taskbar-divider"></div>
+        <div id="taskbar-clock">00:00</div>
+    </div>
+
+    <script type="module">
+        import {
+            tests, verify, prepareTextarea, snapshot
+        } from './test-keys.js';
+
+        let cur = 0, pass = 0, fail = 0, skip = 0;
+        let beforeSnap = null;
+
+        const ta = document.getElementById('test-area');
+        const $ = id => document.getElementById(id);
+
+        // ── Clock
+        function updateClock() {
+            const now = new Date();
+            $('taskbar-clock').textContent =
+                String(now.getHours()).padStart(2, '0') + ':' +
+                String(now.getMinutes()).padStart(2, '0');
+        }
+        setInterval(updateClock, 10000);
+        updateClock();
+
+        // ── Progress blocks
+        function renderProgress() {
+            const wrap = $('progress-wrap');
+            wrap.innerHTML = '';
+            const total = tests.length;
+            const filled = Math.round((cur / total) * Math.floor(wrap.offsetWidth / 10));
+            for (let i = 0; i < filled; i++) {
+                const b = document.createElement('div');
+                b.className = 'progress-block';
+                wrap.appendChild(b);
+            }
+        }
+
+        // ── Render test
+        function render() {
+            if (cur >= tests.length) { showResult(); return; }
+            const t = tests[cur];
+            $('group').textContent = '▸ ' + t.g;
+            $('test-name').textContent = t.name;
+            $('instruction').textContent = '👉 ' + t.instruction;
+            $('expected').textContent = t.expected;
+            $('idx').textContent = cur + 1;
+            $('total').textContent = tests.length;
+
+            const sr = $('status-result');
+            sr.textContent = 'Aguardando tecla...';
+            sr.className = '';
+
+            prepareTextarea(ta, t.verify);
+            beforeSnap = snapshot(ta);
+            renderProgress();
+            updateCursorStatus();
+        }
+
+        // ── Cursor status bar
+        function updateCursorStatus() {
+            $('cursor-pos').textContent = ta.selectionStart;
+            $('sel-len').textContent = ta.selectionEnd - ta.selectionStart;
+        }
+
+        // ── Listen for keystrokes in textarea
+        ta.addEventListener('keyup', () => {
+            updateCursorStatus();
+            if (!beforeSnap) return;
+            const t = tests[cur];
+            const after = snapshot(ta);
+            const result = verify(t.verify, beforeSnap, after, ta);
+            const sr = $('status-result');
+            if (result === true) {
+                sr.textContent = '✓ DETECTADO — PASSOU!';
+                sr.className = 'pass';
+                setTimeout(() => next('pass'), 600);
+            } else if (result === false) {
+                sr.textContent = '✗ Não funcionou como esperado';
+                sr.className = 'fail';
+            }
+        });
+
+        ta.addEventListener('keydown', () => {
+            // re-snap antes de cada tecla para testes destrutivos (delete, etc)
+            if (!beforeSnap) beforeSnap = snapshot(ta);
+        });
+
+        // ── Score
+        function updateScore() {
+            $('s-pass').textContent = pass;
+            $('s-fail').textContent = fail;
+            $('s-skip').textContent = skip;
+            const done = pass + fail;
+            $('s-pct').textContent = done ? Math.round(pass / done * 100) + '%' : '—';
+        }
+
+        // ── Advance
+        function next(result) {
+            if (result === 'pass') pass++;
+            else if (result === 'fail') fail++;
+            else skip++;
+            beforeSnap = null;
+            cur++;
+            updateScore();
+            render();
+        }
+
+        // ── Result
+        function showResult() {
+            $('main-window').style.opacity = '0.4';
+            const pct = pass + fail > 0 ? Math.round(pass / (pass + fail) * 100) : 0;
+            $('res-icon').textContent = pct === 100 ? '🎉' : pct >= 70 ? '⚠️' : '💀';
+            $('res-msg').innerHTML =
+                `<strong>${pct}%</strong> dos testes passaram.<br><br>` +
+                (fail === 0
+                    ? 'Tudo funcionando! Seu Mac está windowsficado.'
+                    : `${fail} atalho(s) falharam.<br>Rode <code>./windowsfy-the-mac.sh --install</code> novamente.`);
+            $('result-dialog').style.display = 'block';
+        }
+
+        window.restart = function () {
+            cur = pass = fail = skip = 0;
+            $('main-window').style.opacity = '1';
+            $('result-dialog').style.display = 'none';
+            updateScore();
+            render();
+        };
+
+        render();
+    </script>
+</body>
+
+</html>
