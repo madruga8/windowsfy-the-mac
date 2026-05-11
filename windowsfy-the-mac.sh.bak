@@ -101,12 +101,11 @@ PLIST_INNER
     /* ── Início / Fim do documento (Ctrl+Home / Ctrl+End) ── */
     "@\UF729"  = "moveToBeginningOfDocument:";
     "@\UF72B"  = "moveToEndOfDocument:";
+    "@\UF701"  = "moveToBeginningOfDocument:";
+    "@\UF700"  = "moveToBeginningOfDocument:";
     "@$\UF729" = "moveToBeginningOfDocumentAndModifySelection:";
     "@$\UF72B" = "moveToEndOfDocumentAndModifySelection:";
-    "^\UF729"  = "moveToBeginningOfDocument:";
-    "^\UF72B"  = "moveToEndOfDocument:";
-    "^$\UF729" = "moveToBeginningOfDocumentAndModifySelection:";
-    "^$\UF72B" = "moveToEndOfDocumentAndModifySelection:";
+    "@$\UF701" = "moveToBeginningOfDocumentAndModifySelection:";
 
     /* ── Navegação por palavra (Ctrl+← / Ctrl+→) ── */
     "@\UF702"  = "moveWordLeft:";
