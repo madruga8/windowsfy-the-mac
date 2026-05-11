@@ -469,6 +469,7 @@
 
         let cur = 0, pass = 0, fail = 0, skip = 0;
         let beforeSnap = null;
+        let undoValue = null;  // usado para detectar Ctrl+Y (redo)
 
         const ta = document.getElementById('test-area');
         const $ = id => document.getElementById(id);
@@ -513,6 +514,7 @@
 
             prepareTextarea(ta, t.verify);
             beforeSnap = snapshot(ta);
+            undoValue = null;  // reseta rastreamento de undo/redo
             renderProgress();
             updateCursorStatus();
         }
@@ -523,11 +525,26 @@
             $('sel-len').textContent = ta.selectionEnd - ta.selectionStart;
         }
 
-        // ── Listen for keystrokes in textarea
-        ta.addEventListener('keyup', () => {
+        // ── Ouve teclas no textarea
+        ta.addEventListener('keyup', (e) => {
             updateCursorStatus();
             if (!beforeSnap) return;
             const t = tests[cur];
+
+            // Rastreia sequência Ctrl+Z → Ctrl+Y para o teste de redo
+            if (t.verify === 'ctrl-y') {
+                const isCtrl = e.ctrlKey || e.metaKey;
+                if (isCtrl && e.key.toLowerCase() === 'z') {
+                    undoValue = ta.value;  // snapshot após undo
+                    return;               // não avaliar ainda
+                }
+                if (isCtrl && e.key.toLowerCase() === 'y') {
+                    if (undoValue !== null && ta.value !== undoValue) {
+                        ta.dataset.redoDetected = "1";  // redo funcionou!
+                    }
+                }
+            }
+
             const after = snapshot(ta);
             const result = verify(t.verify, beforeSnap, after, ta);
             const sr = $('status-result');
@@ -541,8 +558,8 @@
             }
         });
 
+        // keydown apenas para garantir foco (beforeSnap já é definido em render)
         ta.addEventListener('keydown', () => {
-            // re-snap antes de cada tecla para testes destrutivos (delete, etc)
             if (!beforeSnap) beforeSnap = snapshot(ta);
         });
 
