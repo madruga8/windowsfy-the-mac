@@ -92,25 +92,45 @@ PLIST_INNER
     mkdir -p "$KEYBINDINGS_DIR"
     cat > "$KEYBINDINGS_FILE" << 'KEYBINDINGS_INNER'
 {
+    /* ── Início / Fim de linha ── */
     "\UF729"   = "moveToBeginningOfLine:";
     "\UF72B"   = "moveToEndOfLine:";
     "$\UF729"  = "moveToBeginningOfLineAndModifySelection:";
     "$\UF72B"  = "moveToEndOfLineAndModifySelection:";
+
+    /* ── Início / Fim do documento (Ctrl+Home / Ctrl+End) ── */
     "@\UF729"  = "moveToBeginningOfDocument:";
     "@\UF72B"  = "moveToEndOfDocument:";
+    "@\UF701"  = "moveToBeginningOfDocument:";
+    "@\UF700"  = "moveToBeginningOfDocument:";
     "@$\UF729" = "moveToBeginningOfDocumentAndModifySelection:";
     "@$\UF72B" = "moveToEndOfDocumentAndModifySelection:";
+    "@$\UF701" = "moveToBeginningOfDocumentAndModifySelection:";
+
+    /* ── Navegação por palavra (Ctrl+← / Ctrl+→) ── */
     "@\UF702"  = "moveWordLeft:";
     "@\UF703"  = "moveWordRight:";
     "@$\UF702" = "moveWordLeftAndModifySelection:";
     "@$\UF703" = "moveWordRightAndModifySelection:";
+
+    /* ── Delete por palavra (Ctrl+Backspace / Ctrl+Delete) ── */
     "@\177"    = "deleteWordBackward:";
     "@\UF728"  = "deleteWordForward:";
+
+    /* ── Deletar até fim da linha (Ctrl+Shift+K) ── */
+    "@$k"      = "deleteToEndOfParagraph:";
+
+    /* ── Recortar com Shift+Delete ── */
     "$\UF728"  = "cut:";
+
+    /* ── Page Up / Page Down ── */
     "\UF72C"   = "pageUp:";
     "\UF72D"   = "pageDown:";
     "$\UF72C"  = "pageUpAndModifySelection:";
     "$\UF72D"  = "pageDownAndModifySelection:";
+
+    /* ── Redo com Ctrl+Y (padrão Windows) ── */
+    "@y"       = "redo:";
 }
 KEYBINDINGS_INNER
     print_ok "Navegação de texto configurada."
